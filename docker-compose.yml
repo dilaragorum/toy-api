@@ -1,0 +1,9 @@
+version: "3"
+services:
+  db:
+    image: couchbase:community-7.1.1
+    deploy:
+      replicas: 1
+    ports:
+      - 8091:8091
+      - 11210:11210
