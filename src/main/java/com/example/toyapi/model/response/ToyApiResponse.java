@@ -1,4 +1,4 @@
-package com.example.toyapi.model;
+package com.example.toyapi.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

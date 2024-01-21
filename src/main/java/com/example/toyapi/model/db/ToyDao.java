@@ -1,10 +1,14 @@
-package com.example.toyapi.model;
+package com.example.toyapi.model.db;
 
 import lombok.Data;
 import org.springframework.data.couchbase.core.mapping.Document;
 
+import java.time.Instant;
+
+
 @Data
-public class Toy {
+@Document
+public class ToyDao {
     String id;
     String country;
     String address;
@@ -15,4 +19,9 @@ public class Toy {
     String message;
     int durationDay;
     String warehouse;
+    long indexedAt;
+
+    public ToyDao() {
+        indexedAt = Instant.now().getEpochSecond();
+    }
 }

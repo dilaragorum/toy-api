@@ -1,9 +1,28 @@
 version: "3"
 services:
   db:
-    image: couchbase:community-7.1.1
-    deploy:
-      replicas: 1
+    image: couchbase/server:community-7.1.0-aarch64
     ports:
-      - 8091:8091
-      - 11210:11210
+      - "8091:8091"
+      - "8092:8092"
+      - "8093:8093"
+      - "8094:8094"
+      - "8095:8095"
+      - "8096:8096"
+      - "11210:11210"
+    environment:
+      - USERNAME=admin
+      - PASSWORD=password
+      - BUCKET_NAME=toys
+    command: >
+      bash -c "
+        /entrypoint.sh couchbase-server &
+        sleep 5
+    
+        couchbase-cli cluster-init -c 127.0.0.1:8091 --cluster-username=$$USERNAME --cluster-password=$$PASSWORD --cluster-ramsize=512 --services=data,index,query,fts
+        couchbase-cli bucket-create -c 127.0.0.1:8091 --username=$$USERNAME --password=$$PASSWORD --bucket=$$BUCKET_NAME --bucket-type=couchbase --bucket-ramsize=256 --bucket-replica=1    
+        couchbase-cli user-manage -c 127.0.0.1:8091 --username=$$USERNAME --password=$$PASSWORD --set --rbac-username $$USERNAME --rbac-password $$PASSWORD --rbac-name "admin" --roles bucket_full_access[*] --auth-domain local
+        
+        tail -f /dev/null
+      "
+
